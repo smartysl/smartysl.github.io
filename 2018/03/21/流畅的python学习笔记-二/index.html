@@ -81,19 +81,17 @@
 
 
 
-<meta name="description" content="于轼霖的第一篇博客">
+<meta name="description" content="python的数据结构之序列构成的数组(一)：列表推导与元组 我对于列表和元组的操作一直以来掌握地都不是很好，终于有机会更加系统而深入的学习数组有关的知识。 列表推导:在了解生成器表达式的写法之前当我生成一个列表时是这么写的:  list=[] for i in range(1,10):     list.append(i)  而使用生成器表达式之后呢：  list=[i for i in ran">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第一篇博客">
-<meta property="og:url" content="http://yoursite.com/2018/03/17/第一篇博客/index.html">
+<meta property="og:title" content="流畅的python学习笔记(二)">
+<meta property="og:url" content="http://yoursite.com/2018/03/21/流畅的python学习笔记-二/index.html">
 <meta property="og:site_name" content="smart">
-<meta property="og:description" content="于轼霖的第一篇博客">
+<meta property="og:description" content="python的数据结构之序列构成的数组(一)：列表推导与元组 我对于列表和元组的操作一直以来掌握地都不是很好，终于有机会更加系统而深入的学习数组有关的知识。 列表推导:在了解生成器表达式的写法之前当我生成一个列表时是这么写的:  list=[] for i in range(1,10):     list.append(i)  而使用生成器表达式之后呢：  list=[i for i in ran">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/cute.jpg">
-<meta property="og:updated_time" content="2018-03-17T10:36:03.048Z">
+<meta property="og:updated_time" content="2018-03-21T16:16:07.129Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="第一篇博客">
-<meta name="twitter:description" content="于轼霖的第一篇博客">
-<meta name="twitter:image" content="http://yoursite.com/images/cute.jpg">
+<meta name="twitter:title" content="流畅的python学习笔记(二)">
+<meta name="twitter:description" content="python的数据结构之序列构成的数组(一)：列表推导与元组 我对于列表和元组的操作一直以来掌握地都不是很好，终于有机会更加系统而深入的学习数组有关的知识。 列表推导:在了解生成器表达式的写法之前当我生成一个列表时是这么写的:  list=[] for i in range(1,10):     list.append(i)  而使用生成器表达式之后呢：  list=[i for i in ran">
 
 
 
@@ -123,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/03/17/第一篇博客/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/21/流畅的python学习笔记-二/"/>
 
 
 
 
 
-  <title>第一篇博客 | smart</title>
+  <title>流畅的python学习笔记(二) | smart</title>
   
 
 
@@ -276,7 +274,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/17/第一篇博客/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/21/流畅的python学习笔记-二/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="于轼霖">
@@ -293,7 +291,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">第一篇博客</h1>
+          <h1 class="post-title" itemprop="name headline">流畅的python学习笔记(二)</h1>
         
 
         <div class="post-meta">
@@ -305,8 +303,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-17T18:07:35+08:00">
-                2018-03-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-21T21:00:51+08:00">
+                2018-03-21
               </time>
             
 
@@ -343,7 +341,46 @@
       
 
       
-        <p>于轼霖的第一篇博客<br><img src="/images/cute.jpg" width="200" height="300"></p>
+        <p>python的数据结构之序列构成的数组(一)：列表推导与元组</p>
+<p>我对于列表和元组的操作一直以来掌握地都不是很好，终于有机会更加系统而深入的学习数组有关的知识。</p>
+<p>列表推导:<br>在了解生成器表达式的写法之前当我生成一个列表时是这么写的:</p>
+<pre><code>
+list=[]
+for i in range(1,10):
+    list.append(i)
+</code></pre>
+而使用生成器表达式之后呢：
+<pre><code>
+list=[i for i in range(1,10)]
+</code></pre>
+这种写法就是所谓的列表推导，代码的可读性会大大提高，优雅的pythonic写法就是如此。生成表达式的写法与循环条件语句类似，也可以进行判断和嵌套：
+<pre><code>
+colors=['black','white']
+sizes=[42,43,44,45,46]
+shirts=[(color,size) for size in sizes if size >=44 for color in colors]
+</code></pre>
+简单而优雅的表达，python本应如此。
+同时生成表达式还可以生成元组、数组等其它序列类型，其语法大同小异。
+最开始接触元组这个概念，我就是单纯地将它理解为不可改变的列表。然而元组的作用远非如此。元组其实是对数据的记录，元组中的每一个元素都存放了一个字段的数据，外加字段的位置，就为数据赋予了意义。
+<pre><code>
+job,sex,city,school=('student','male','sichuan','UESTC')
+</code></pre>
+一行代码初始化了四个变量，这就体现了元组的记录作用。同时，对元组的拆包(unpacking)操作让记录更加完美。
+<pre><code>
+ysl=('student','male','sichuan','UESTC')
+_,_,_,school=ysl
+</code></pre>
+这就是元组拆包的过程，通过对应数据的位置，取出需要的数据，_占位符可以代替不需要的元素。此外*可以用来处理剩下的元素：
+<pre><code>
+ysl=('student','male','sichuan','UESTC')
+job,*rest=ysl
+print(rest)
+
+>>['male', 'sichuan', 'UESTC']
+</code></pre>
+
+<p>collections库中的nametuple函数可以构建一个带字段名的元组和一个有名字的类，被构造出的元组被称作具名元组：</p>
+<p><pre><code><br>from collections import namedtuple<br>stu=namedtuple(‘student’,’name sex city school’)<br>ysl=stu(‘ysl’,’male’,’sichuan’,’UESTC’)<br>print(ysl)<br>for key,value in ysl._asdict().items():<br>    print(key+”:”,value)<br>>>student(name=’ysl’, sex=’male’, city=’sichuan’, school=’UESTC’)<br>>>name: ysl<br>sex: male<br>city: sichuan<br>school: UESTC<br></code></pre><br>nametuple()的两个参数分别为类的名称和类的各个字段名，后者可以为多个字符串，也可以为一个由空格分开的长字符串。具名元组还拥有自己的类方法，如_asdict()方法，它可以将元组以OrderedDict形式返回，方便元组内容的展示。</p>
 
       
     </div>
@@ -368,8 +405,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/17/My-first-post/" rel="next" title="My first post">
-                <i class="fa fa-chevron-left"></i> My first post
+              <a href="/2018/03/19/web前端学习-响应式设计/" rel="next" title="web前端学习:响应式设计">
+                <i class="fa fa-chevron-left"></i> web前端学习:响应式设计
               </a>
             
           </div>
@@ -377,10 +414,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/18/流畅的python学习笔记-一/" rel="prev" title="流畅的python学习笔记(一)">
-                流畅的python学习笔记(一) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
