@@ -274,6 +274,135 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/26/django学习遇到的问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="于轼霖">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/12.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="smart">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/26/django学习遇到的问题/" itemprop="url">django学习遇到的问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-26T16:03:59+08:00">
+                2018-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="最近心血来潮，对django文档中的tutor进行了一下内容的扩展，目前增添了登录、注册的功能，并实现了每个用户对同一问题只能投出一票的限制。中间遇到了不少问题，现在记录一下。"><a href="#最近心血来潮，对django文档中的tutor进行了一下内容的扩展，目前增添了登录、注册的功能，并实现了每个用户对同一问题只能投出一票的限制。中间遇到了不少问题，现在记录一下。" class="headerlink" title="最近心血来潮，对django文档中的tutor进行了一下内容的扩展，目前增添了登录、注册的功能，并实现了每个用户对同一问题只能投出一票的限制。中间遇到了不少问题，现在记录一下。"></a>最近心血来潮，对django文档中的tutor进行了一下内容的扩展，目前增添了登录、注册的功能，并实现了每个用户对同一问题只能投出一票的限制。中间遇到了不少问题，现在记录一下。</h2><h3 id="有关Foreignkey的查找与遍历："><a href="#有关Foreignkey的查找与遍历：" class="headerlink" title="有关Foreignkey的查找与遍历："></a>有关Foreignkey的查找与遍历：</h3><p>django数据库模型中的Foreignkey可以使两个数据库模型实现一对多的关联，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class question(models.Model):</span><br><span class="line">    question_text=models.CharField(max_length=200)</span><br><span class="line">    time=models.DateTimeField(&apos;date published&apos;)</span><br><span class="line">    def __str__(self):</span><br><span class="line">        return self.question_text</span><br><span class="line">class answer(models.Model):</span><br><span class="line">    question=models.ForeignKey(question,on_delete=models.CASCADE,related_name=&quot;choice&quot;)</span><br><span class="line">    answer=models.CharField(max_length=200)</span><br><span class="line">    num=models.IntegerField(default=0)</span><br><span class="line">    def __str__(self):</span><br><span class="line">        return self.answer</span><br></pre></td></tr></table></figure>
+<p>其中answer模型就通过外键与question模型连接，也就是说每一个question都可以关联多个answer，当我们需要从取出question模型所对应的answer模型中的字段时可以用以下方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">selected_choice=questions.choice.get(pk=request.POST[&apos;choice&apos;])</span><br></pre></td></tr></table></figure></p>
+<p>注意，我们在定义外键时传入了related_name参数，也就是说这个choice方法的名字是我们自定义的。如果我们没有设置这个参数，默认的方法名与该类的名称有关<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">selected_choice=questions.choice_set.get(pk=request.POST[&apos;choice&apos;])</span><br></pre></td></tr></table></figure></p>
+<p>同数据库模型的方法一样，该方法也能遍历数据库或接收参数进行筛选。对应前端渲染代码为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% for choice in question.choice.all %&#125;</span><br></pre></td></tr></table></figure></p>
+<p>意为取出该question下的所有choice</p>
+<h3 id="有关request-user"><a href="#有关request-user" class="headerlink" title="有关request.user"></a>有关request.user</h3><p>django内部针对用户的管理有内置的User模型，其内部包含username,password等字段，与之对应的也有一些内置的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">def Login(request):</span><br><span class="line">    if request.method==&quot;POST&quot;:</span><br><span class="line">        userform=Userform(request.POST)</span><br><span class="line">        if userform.is_valid():</span><br><span class="line">            username=userform.cleaned_data[&apos;username&apos;]</span><br><span class="line">            password=userform.cleaned_data[&apos;password&apos;]</span><br><span class="line">            user=authenticate(username=username,password=password)</span><br><span class="line">            if user:</span><br><span class="line">                login(request,user)</span><br><span class="line">                return HttpResponseRedirect(&apos;/polls/&apos;)</span><br><span class="line">    else:</span><br><span class="line">        userform=Userform()</span><br><span class="line">        return render(request,&apos;polls/login.html&apos;,&#123;&quot;userform&quot;:userform&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>这段代码就用到了User对象的authenticate（验证username,password），login（验证成功后登录并生成session以保持登陆状态）,logout（删除session以登出）。当从数据库取出已登陆的用户信息时就要用到request.user，它会返回当前登陆状态下的User对象，使用起来很是方便：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def comment(request,question_id):</span><br><span class="line">    if request.method==&quot;POST&quot;:</span><br><span class="line">        commentform=Commentform(request.POST)</span><br><span class="line">        if commentform.is_valid():</span><br><span class="line">            content=commentform.cleaned_data[&apos;content&apos;]</span><br><span class="line">            questions=question.objects.get(pk=question_id)</span><br><span class="line">            Comment.objects.create(belong_user=request.user,question=questions,content=content)</span><br><span class="line">            return HttpResponseRedirect(reverse(&apos;result&apos;,args=(questions.id,)))</span><br></pre></td></tr></table></figure></p>
+<h3 id="如何限制投票次数："><a href="#如何限制投票次数：" class="headerlink" title="如何限制投票次数："></a>如何限制投票次数：</h3><p>当进行投票时往往会限制对同一问题的投票次数，解决方法是新建一个数据库模型来储存投票的状态，每次投票前取出数据进行分析判断：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class Choicerecord(models.Model):</span><br><span class="line">    question=models.ForeignKey(question,on_delete=models.CASCADE)</span><br><span class="line">    username=models.ForeignKey(User,on_delete=models.CASCADE)</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">def vote(request,question_id):</span><br><span class="line">    questions=get_object_or_404(question,pk=question_id)</span><br><span class="line">    if Choicerecord.objects.filter(username=request.user,question=questions):</span><br><span class="line">        return HttpResponse(&quot;请不要重复投票&quot;)</span><br><span class="line">    else:</span><br><span class="line">       try:</span><br><span class="line">           selected_choice=questions.choice.get(pk=request.POST[&apos;choice&apos;])</span><br><span class="line">       except(KeyError,answer.DoesNotExist):</span><br><span class="line">           return render(request,&quot;polls/detail.html&quot;,&#123;&apos;error_message&apos;:&quot;选择失败&quot;,&quot;question&quot;:questions&#125;)</span><br><span class="line">       else:</span><br><span class="line">           selected_choice.num=selected_choice.num+1</span><br><span class="line">           selected_choice.save()</span><br><span class="line">           Choicerecord.objects.create(username=request.user,question=questions)</span><br><span class="line">           return HttpResponseRedirect(reverse(&apos;result&apos;,args=(questions.id,)))</span><br></pre></td></tr></table></figure></p>
+<p>本段代码是限制每个用户在同一问题上只能投票一次。每次投票时生成一个Choicerecord对象记录投票情况，每一次投票前检查数据库是否含有该对象。应该注意的是get方法和filter方法的区别：get返回单个对象（为空或为多个都会报错）,filter返回对象列表（为空或为多个都可以）。所以在这里应该使用filter方法</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/21/流畅的python学习笔记-二/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -962,7 +1091,7 @@ print(rest)
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
